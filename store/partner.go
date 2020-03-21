@@ -32,7 +32,7 @@ func (ps *PartnerStore) List(offset, limit int64) ([]model.Partner, int64, error
 		return nil, 0, err
 	}
 	partners := []model.Partner{}
-	err = mgm.Coll(partnerModel).SimpleFind(partners, bson.M{}, &options.FindOptions{
+	err = mgm.Coll(partnerModel).SimpleFind(&partners, bson.M{}, &options.FindOptions{
 		Skip:  &offset,
 		Limit: &limit,
 	})
@@ -40,4 +40,21 @@ func (ps *PartnerStore) List(offset, limit int64) ([]model.Partner, int64, error
 		return nil, 0, err
 	}
 	return partners, count, nil
+}
+
+func (ps *PartnerStore) UpdatePartner(p *model.Partner) error {
+	err := mgm.Coll(p).Update(p)
+	if nil != err {
+		return err
+	}
+	return nil
+}
+
+func (ps *PartnerStore) GetById(id string) (*model.Partner, error) {
+	partner := &model.Partner{}
+	err := mgm.Coll(partner).FindByID(id, partner)
+	if nil != err {
+		return nil, err
+	}
+	return partner, nil
 }

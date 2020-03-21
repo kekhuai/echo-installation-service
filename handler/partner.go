@@ -37,7 +37,28 @@ func (h *Handler) Partners(c echo.Context) error {
 	var count int64
 	partners, count, err = h.partnerStore.List(offset, limit)
 	if nil != err {
-		return c.JSON(http.StatusInternalServerError, nil)
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
 	}
 	return c.JSON(http.StatusOK, newPartnerListResponse(partners, count))
+}
+
+// UpdatePartner update a partner by id
+func (h *Handler) UpdatePartner(c echo.Context) error {
+	id := c.Param("id")
+	partner, err := h.partnerStore.GetById(id)
+	if nil != err {
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+	}
+	if nil == partner {
+		return c.JSON(http.StatusNotFound, utils.NotFound())
+	}
+	req := &partnerUpdateRequest{}
+	req.populate(partner)
+	if err := req.bind(c, partner); nil != err {
+		return c.JSON(http.StatusUnprocessableEntity, utils.NewError(err))
+	}
+	if err := h.partnerStore.UpdatePartner(partner); nil != err {
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+	}
+	return c.JSON(http.StatusOK, newPartnerResponse(c, partner))
 }
