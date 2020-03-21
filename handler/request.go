@@ -6,7 +6,9 @@ import (
 )
 
 type partnerCreateRequest struct {
-	Name string `json:"name" validate:"required"`
+	Partner struct {
+		Name string `json:"name"`
+	} `json:"partner"`
 }
 
 func (r *partnerCreateRequest) bind(c echo.Context, p *model.Partner) error {
@@ -16,6 +18,6 @@ func (r *partnerCreateRequest) bind(c echo.Context, p *model.Partner) error {
 	if err := c.Validate(r); nil != err {
 		return err
 	}
-	p.Name = r.Name
+	p.Name = r.Partner.Name
 	return nil
 }
