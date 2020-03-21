@@ -42,6 +42,7 @@ func (ps *PartnerStore) List(offset, limit int64) ([]model.Partner, int64, error
 	return partners, count, nil
 }
 
+// UpdatePartner update a partner
 func (ps *PartnerStore) UpdatePartner(p *model.Partner) error {
 	err := mgm.Coll(p).Update(p)
 	if nil != err {
@@ -50,11 +51,17 @@ func (ps *PartnerStore) UpdatePartner(p *model.Partner) error {
 	return nil
 }
 
-func (ps *PartnerStore) GetById(id string) (*model.Partner, error) {
+// GetByID get partner by it
+func (ps *PartnerStore) GetByID(id string) (*model.Partner, error) {
 	partner := &model.Partner{}
 	err := mgm.Coll(partner).FindByID(id, partner)
 	if nil != err {
 		return nil, err
 	}
 	return partner, nil
+}
+
+// DeletePartner delete a partner by id implementation
+func (ps *PartnerStore) DeletePartner(p *model.Partner) error {
+	return mgm.Coll(p).Delete(p)
 }

@@ -45,7 +45,7 @@ func (h *Handler) Partners(c echo.Context) error {
 // UpdatePartner update a partner by id
 func (h *Handler) UpdatePartner(c echo.Context) error {
 	id := c.Param("id")
-	partner, err := h.partnerStore.GetById(id)
+	partner, err := h.partnerStore.GetByID(id)
 	if nil != err {
 		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
 	}
@@ -61,4 +61,21 @@ func (h *Handler) UpdatePartner(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
 	}
 	return c.JSON(http.StatusOK, newPartnerResponse(c, partner))
+}
+
+// DeletePartner delete a partner by id
+func (h *Handler) DeletePartner(c echo.Context) error {
+	id := c.Param("id")
+	partner, err := h.partnerStore.GetByID(id)
+	if nil != err {
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+	}
+	if nil == partner {
+		return c.JSON(http.StatusNotFound, utils.NotFound())
+	}
+	err = h.partnerStore.DeletePartner(partner)
+	if nil != err {
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{"result": "ok"})
 }

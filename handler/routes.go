@@ -8,4 +8,5 @@ func (h *Handler) Register(v1 *echo.Group) {
 	partners.POST("", h.CreatePartner)
 	partners.GET("", h.Partners)
 	partners.PUT("/:id", h.UpdatePartner)
+	partners.DELETE("/:id", h.DeletePartner)
 }
