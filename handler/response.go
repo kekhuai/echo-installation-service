@@ -6,7 +6,8 @@ import (
 )
 
 type partnerResponse struct {
-	Name string `json:"name"`
+	ID   interface{} `json:"id"`
+	Name string      `json:"name"`
 }
 
 type singlePartnerResponse struct {
@@ -20,6 +21,7 @@ type partnerListResponse struct {
 
 func newPartnerResponse(c echo.Context, p *model.Partner) *singlePartnerResponse {
 	pr := new(partnerResponse)
+	pr.ID = p.GetID()
 	pr.Name = p.Name
 	return &singlePartnerResponse{pr}
 }
@@ -29,6 +31,7 @@ func newPartnerListResponse(partners []model.Partner, count int64) *partnerListR
 	r.Partners = make([]*partnerResponse, 0)
 	for _, p := range partners {
 		pr := new(partnerResponse)
+		pr.ID = p.GetID()
 		pr.Name = p.Name
 		r.Partners = append(r.Partners, pr)
 	}
